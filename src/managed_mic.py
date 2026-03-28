@@ -38,8 +38,8 @@ def record_from_mic_until(
         output_file = open(output_filename, "wb")
         print("File open, writing header")
         # write the dummy header
-        total_bytes_written = output_file.write(wave_header.to_bytes())
-        total_bytes_recorded = 0
+        output_file.write(wave_header.to_bytes())
+        audio_bytes_written = 0
 
         mic_samples = bytearray(SAMPLE_BUF_LENGTH)
         mic_samples_mv = memoryview(mic_samples)
@@ -49,12 +49,11 @@ def record_from_mic_until(
             bytes_from_mic = mic.readinto(mic_samples_mv)
             if bytes_from_mic > 0:
                 bytes_written = output_file.write(mic_samples_mv[:bytes_from_mic])
-                total_bytes_recorded += bytes_from_mic
-                total_bytes_written += bytes_written
+                audio_bytes_written += bytes_written
         # update header
         print("Recording complete. Finalising header")
         output_file.seek(0)
-        wave_header.data_size = total_bytes_written - 36
+        wave_header.data_size = audio_bytes_written
         _  = output_file.write(wave_header.to_bytes())
 
     finally:

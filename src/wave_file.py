@@ -38,7 +38,7 @@ class WaveFileHeader:
 
     @property
     def block_align(self):
-        return self.channels * self.bits_per_sample
+        return self.channels * self.bits_per_sample // 8
 
     def to_bytes(self):
         data = bytes(b"RIFF") # riff header
