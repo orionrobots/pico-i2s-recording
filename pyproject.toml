@@ -1,0 +1,10 @@
+[project]
+name = "pico-i2s-recording"
+version = "0.1.0"
+description = "Demonstration of recording audio with i2s on a Pico to an SD card"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mpremote",
+    "invoke",
+]
