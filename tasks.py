@@ -11,8 +11,8 @@ def update(c):
     """Update all source files"""
     c.run("mpremote cp src/*.py :")
 
-@task(install_libraries, upload)
-def install():
+@task(install_libraries, update)
+def install(c):
     pass
 
 @task(install)
