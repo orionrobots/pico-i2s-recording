@@ -55,3 +55,37 @@ class WaveFileHeader:
         data += bytes(b"data")
         data += self.data_size.to_bytes(4, "little")
         return data
+
+@contextmanager
+def create_wave_writer(output_filename, bits_per_sample, sample_rate, channels):
+    """Create a wav output stream.
+    """
+    wave_header = wave_file.WaveFileHeader()
+    wave_header.bits_per_sample = bits_per_sample
+    wave_header.sample_rate = sample_rate
+    wave_header.channels = 1
+
+    output_file = None
+    try:
+        output_file = open(output_filename, "wb")
+
+        print("File open, writing header")
+        # write the dummy header
+        output_file.write(wave_header.to_bytes())
+        audio_bytes_written = 0
+
+        def write_function(bytes_to_write):
+            bytes_written = output_file.write(bytes_to_write)
+            audio_bytes_written += bytes_written
+
+        try:
+            yield write_function
+        finally:
+            # update header
+            print("Recording complete. Finalising header")
+            output_file.seek(0)
+            wave_header.data_size = audio_bytes_written
+            _  = output_file.write(wave_header.to_bytes())
+    finally:
+        if output_file:
+            output_file.close()
